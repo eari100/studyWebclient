@@ -1,6 +1,5 @@
 package com.example.studywebclient.controller;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -15,7 +14,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
-@RequiredArgsConstructor
 @RestController
 public class SummonerApiController {
 
