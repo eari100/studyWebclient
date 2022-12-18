@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
@@ -28,5 +30,14 @@ public class SummonerApiController {
 
         return restTemplate.exchange(String.format("https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/%s", summonerName),
                 HttpMethod.GET, new HttpEntity(httpHeaders), new ParameterizedTypeReference<Map>() {}).getBody();
+    }
+
+    @GetMapping("/v2/summoners/{summonerName}")
+    public Mono<Map> getSummonerV2(@PathVariable String summonerName) {
+        return WebClient.create(String.format("https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/%s", summonerName))
+                .get()
+                .header("X-Riot-Token", apiKey)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<>() {});
     }
 }
