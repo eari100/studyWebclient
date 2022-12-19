@@ -1,6 +1,7 @@
 package com.example.studywebclient.controller;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -13,6 +14,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class MatchApiController {
@@ -37,5 +39,15 @@ public class MatchApiController {
                 .header("X-Riot-Token", apiKey)
                 .retrieve()
                 .bodyToMono(List.class);
+    }
+
+    @GetMapping("/v1/matches/{matchId}")
+    public Map<String, Object> getMatchDetailV1(@PathVariable String matchId) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.set("X-Riot-Token", apiKey);
+
+        return restTemplate.exchange(String.format("https://asia.api.riotgames.com/lol/match/v5/matches/%s", matchId),
+                HttpMethod.GET, new HttpEntity(httpHeaders), new ParameterizedTypeReference<Map>() {}).getBody();
     }
 }
