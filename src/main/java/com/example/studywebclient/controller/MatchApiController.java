@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -26,5 +28,14 @@ public class MatchApiController {
 
         return restTemplate.exchange(String.format("https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/%s/ids?start=%s&count=%s", puuid, start, count),
                 HttpMethod.GET, new HttpEntity(httpHeaders), List.class).getBody();
+    }
+
+    @GetMapping("/v2/matches/{puuid}/ids")
+    public Mono<List> getMatchesV2(@PathVariable String puuid, @RequestParam(defaultValue = "0") int start, @RequestParam(defaultValue = "20") int count) {
+        return WebClient.create(String.format("https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/%s/ids?start=%s&count=%s", puuid, start, count))
+                .get()
+                .header("X-Riot-Token", apiKey)
+                .retrieve()
+                .bodyToMono(List.class);
     }
 }
