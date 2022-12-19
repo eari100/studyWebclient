@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.List;
 import java.util.Map;
@@ -49,5 +51,14 @@ public class MatchApiController {
 
         return restTemplate.exchange(String.format("https://asia.api.riotgames.com/lol/match/v5/matches/%s", matchId),
                 HttpMethod.GET, new HttpEntity(httpHeaders), new ParameterizedTypeReference<Map>() {}).getBody();
+    }
+
+    @GetMapping("/v2/matches/{matchId}")
+    public Flux<Map> getMatchDetailV2(@PathVariable String matchId) {
+        return WebClient.create(String.format("https://asia.api.riotgames.com/lol/match/v5/matches/%s", matchId))
+                .get()
+                .header("X-Riot-Token", apiKey)
+                .retrieve()
+                .bodyToFlux(new ParameterizedTypeReference<>() {});
     }
 }
