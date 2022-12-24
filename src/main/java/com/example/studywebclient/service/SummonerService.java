@@ -1,5 +1,6 @@
 package com.example.studywebclient.service;
 
+import com.example.studywebclient.dto.riot.SummonerDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -20,13 +21,13 @@ public class SummonerService {
     @Value("${riot.api.key}")
     private String apiKey;
 
-    public Map getSummonerV1(String summonerName) {
+    public SummonerDto getSummonerV1(String summonerName) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set("X-Riot-Token", apiKey);
 
         return restTemplate.exchange(String.format("https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/%s", summonerName),
-                HttpMethod.GET, new HttpEntity(httpHeaders), new ParameterizedTypeReference<Map>() {}).getBody();
+                HttpMethod.GET, new HttpEntity(httpHeaders), SummonerDto.class).getBody();
     }
 
     public Mono getSummonerV2(String summonerName) {
@@ -34,6 +35,6 @@ public class SummonerService {
                 .get()
                 .header("X-Riot-Token", apiKey)
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<>() {});
+                .bodyToMono(SummonerDto.class);
     }
 }
