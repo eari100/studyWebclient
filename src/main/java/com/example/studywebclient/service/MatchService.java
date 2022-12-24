@@ -6,8 +6,10 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -17,6 +19,11 @@ public class MatchService {
 
     @Value("${riot.api.key}")
     String apiKey;
+
+    public Flux getMatchListDetailV2(List<String> matchIdList) {
+        return Flux.fromIterable(matchIdList)
+                .flatMap(this::getMatchDetailV2);
+    }
 
     public Mono<Map> getMatchDetailV2(String matchId) {
         log.info(String.format("Calling getMatchDetailV2 matchId = %s", matchId));
