@@ -3,8 +3,12 @@ package com.example.studywebclient.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -21,6 +25,15 @@ public class MatchService {
 
     @Value("${riot.api.key}")
     String apiKey;
+
+    public Map getMatchDetailV1(String matchId) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.set("X-Riot-Token", apiKey);
+
+        return restTemplate.exchange(String.format("https://asia.api.riotgames.com/lol/match/v5/matches/%s", matchId),
+                HttpMethod.GET, new HttpEntity(httpHeaders), new ParameterizedTypeReference<Map>() {}).getBody();
+    }
 
     public ParallelFlux<Map> getMatchListDetailV2(List<String> matchIdList) {
         return Flux.fromIterable(matchIdList)
