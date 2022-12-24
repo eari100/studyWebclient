@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.ParallelFlux;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.List;
 import java.util.Map;
@@ -20,8 +22,10 @@ public class MatchService {
     @Value("${riot.api.key}")
     String apiKey;
 
-    public Flux getMatchListDetailV2(List<String> matchIdList) {
+    public ParallelFlux<Map> getMatchListDetailV2(List<String> matchIdList) {
         return Flux.fromIterable(matchIdList)
+                .parallel()
+                .runOn(Schedulers.boundedElastic())
                 .flatMap(this::getMatchDetailV2);
     }
 
