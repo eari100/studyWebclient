@@ -28,10 +28,17 @@ public class MatchService {
     public Mono<Map> getMatchDetailV2(String matchId) {
         log.info(String.format("Calling getMatchDetailV2 matchId = %s", matchId));
 
-        return WebClient.create(String.format("https://asia.api.riotgames.com/lol/match/v5/matches/%s", matchId))
+        long start = System.currentTimeMillis();
+        Mono<Map> result = WebClient.create(String.format("https://asia.api.riotgames.com/lol/match/v5/matches/%s", matchId))
                 .get()
                 .header("X-Riot-Token", apiKey)
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<>() {});
+
+        long end = System.currentTimeMillis();
+        long secDiffTime = (end - start) / 1000;
+        log.info(String.format("시간차이(m) : %s", secDiffTime));
+
+        return result;
     }
 }
