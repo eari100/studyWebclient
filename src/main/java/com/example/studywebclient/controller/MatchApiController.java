@@ -1,5 +1,7 @@
 package com.example.studywebclient.controller;
 
+import com.example.studywebclient.service.MatchService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -11,18 +13,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import java.util.List;
 import java.util.Map;
 
+@RequiredArgsConstructor
 @RestController
 public class MatchApiController {
 
     @Value("${riot.api.key}")
     String apiKey;
+
+    private final MatchService matchService;
 
     @GetMapping("/v1/matches/{puuid}/ids")
     public List<String> getMatchesV1(@PathVariable String puuid, @RequestParam(defaultValue = "0") int start, @RequestParam(defaultValue = "20") int count) {
@@ -54,11 +57,7 @@ public class MatchApiController {
     }
 
     @GetMapping("/v2/matches/{matchId}")
-    public Flux<Map> getMatchDetailV2(@PathVariable String matchId) {
-        return WebClient.create(String.format("https://asia.api.riotgames.com/lol/match/v5/matches/%s", matchId))
-                .get()
-                .header("X-Riot-Token", apiKey)
-                .retrieve()
-                .bodyToFlux(new ParameterizedTypeReference<>() {});
+    public Mono<Map> getMatchDetailV2(@PathVariable String matchId) {
+        return matchService.getMatchDetailV2(matchId);
     }
 }
