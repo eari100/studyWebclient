@@ -1,6 +1,6 @@
 package com.example.studywebclient.service;
 
-import com.example.studywebclient.dto.riot.SummonerDto;
+import com.example.studywebclient.dto.riot.summoner.SummonerDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

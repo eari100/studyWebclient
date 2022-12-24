@@ -1,4 +1,4 @@
-package com.example.studywebclient.dto.riot;
+package com.example.studywebclient.dto.riot.summoner;
 
 import lombok.Getter;
 import lombok.Setter;

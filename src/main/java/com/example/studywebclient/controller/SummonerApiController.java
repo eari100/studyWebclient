@@ -1,6 +1,6 @@
 package com.example.studywebclient.controller;
 
-import com.example.studywebclient.dto.riot.SummonerDto;
+import com.example.studywebclient.dto.riot.summoner.SummonerDto;
 import com.example.studywebclient.service.SummonerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
