@@ -15,6 +15,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.publisher.ParallelFlux;
 import reactor.core.scheduler.Schedulers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +26,14 @@ public class MatchService {
 
     @Value("${riot.api.key}")
     String apiKey;
+
+    public List<Map> getMatchListDetailV1(List<String> matchIdList) {
+        List<Map> result = new ArrayList<>();
+
+        matchIdList.forEach(matchId -> result.add(getMatchDetailV1(matchId)));
+
+        return result;
+    }
 
     public Map getMatchDetailV1(String matchId) {
         RestTemplate restTemplate = new RestTemplate();

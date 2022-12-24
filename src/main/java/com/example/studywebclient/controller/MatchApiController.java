@@ -3,7 +3,6 @@ package com.example.studywebclient.controller;
 import com.example.studywebclient.service.MatchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -56,6 +55,22 @@ public class MatchApiController {
     @GetMapping("/v2/matches/{matchId}")
     public Mono<Map> getMatchDetailV2(@PathVariable String matchId) {
         return matchService.getMatchDetailV2(matchId);
+    }
+    @GetMapping("/v1/matches")
+    public List<Map> getMatchDetailListV1() {
+        List<String> matchIdList = Arrays.asList(
+                "KR_6272198808","KR_6272185507","KR_6272161179", "KR_6272116818","KR_6269395293",
+                "KR_6269377935", "KR_6269369655","KR_6269347824","KR_6269313597", "KR_6269281624",
+                "KR_6269257241","KR_6269214800","KR_6269185300","KR_6269124157","KR_6269032458",
+                "KR_6268966927","KR_6268912017","KR_6268833166","KR_6255975855","KR_6255883753");
+
+        long start = System.currentTimeMillis();
+        List<Map> result = matchService.getMatchListDetailV1(matchIdList);
+        long end = System.currentTimeMillis();
+        long secDiffTime = (end - start) / 1000;
+        System.out.println(String.format("시간차이(m) : %s", secDiffTime));
+
+        return result;
     }
 
     @GetMapping("/v2/matches")
