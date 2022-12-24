@@ -30,7 +30,8 @@ public class MatchService {
     public List<Map> getMatchListDetailV1(List<String> matchIdList) {
         List<Map> result = new ArrayList<>();
 
-        matchIdList.forEach(matchId -> result.add(getMatchDetailV1(matchId)));
+        matchIdList.parallelStream()
+                .forEach(matchId -> result.add(getMatchDetailV1(matchId)));
 
         return result;
     }
